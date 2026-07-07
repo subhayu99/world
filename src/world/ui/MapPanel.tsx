@@ -38,9 +38,9 @@ const ACCENT_HERE_PIN = BLUEPRINT.accentWarm;
  * corridor diagram, not this artwork. */
 const PIN_IMAGE_POSITIONS: Record<RoomId, { left: string; top: string; tilt: number }> = {
   journey: { left: '23%', top: '38%', tilt: -3 },
-  warehouse: { left: '76%', top: '24%', tilt: 3 },
-  registry: { left: '72%', top: '58%', tilt: -2 },
-  contact: { left: '26%', top: '76%', tilt: 2 },
+  warehouse: { left: '72%', top: '58%', tilt: 3 },
+  registry: { left: '26%', top: '76%', tilt: -2 },
+  contact: { left: '76%', top: '24%', tilt: 2 },
 };
 
 function chipBackground(status: PinStatus): string {

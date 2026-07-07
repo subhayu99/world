@@ -448,7 +448,7 @@ export function Entrance({ onEnter }: EntranceProps): JSX.Element {
     const egg = data.easterEggs.find((e) => e.id === 'quantumCat');
     return egg?.lines ?? ['…the cat is both asleep and awake.'];
   }, [data.easterEggs]);
-  const planter = useMemo(() => planterTexture(), []);
+  const planter = useMemo(() => assetTexture('textures/entrance/pot_with_duck.webp'), []);
 
   return (
     <group>
@@ -485,9 +485,9 @@ export function Entrance({ onEnter }: EntranceProps): JSX.Element {
       <Bug />
 
       {/* planter under the window */}
-      <mesh position={[4.7, 0.62, WALL_Z + 0.45]}>
-        <planeGeometry args={[2.3, 1.15]} />
-        <meshBasicMaterial map={planter} transparent depthWrite={false} />
+      <mesh position={[4.7, 0.36, WALL_Z + 0.45]}>
+        <planeGeometry args={[2.3, 0.63]} />
+        <meshBasicMaterial map={planter} transparent alphaTest={0.05} depthWrite={false} />
       </mesh>
     </group>
   );

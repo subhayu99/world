@@ -13,7 +13,8 @@ import { CORRIDOR } from '../contracts';
 import { useTextures, useWorldData, useWorldStore } from '../state/hooks';
 import { makeRevealPair } from '../materials/reveal';
 import { drawWoodFloor, PALETTE, type Canvas2D } from '../textures/notebook';
-import { wobbleLine, wobbleClosedPolygon, type Point } from '../textures/rand';
+import { wobbleLine, type Point } from '../textures/rand';
+import { assetTexture } from '../assets';
 import {
   CORRIDOR_HEIGHT,
   CORRIDOR_WIDTH,
@@ -323,12 +324,9 @@ function getFarVeilTexture(): THREE.Texture {
   return texture;
 }
 
-// ---- entry-hero wanderer figure (punchlist #7) ----------------------------
-// A simple hand-inked standing figure, waving — drawn with only rand.ts's
-// exported wobble primitives (this module can't add a new DoodleKind to
-// textures/notebook.ts, which is owned by the texture-vocabulary crew), so
-// a few tiny local ink-stroke helpers stand in for notebook.ts's
-// (unexported) inkLine/inkEllipse.
+// ---- entry-hero avatar flipbook --------------------------------------------
+// Replaces the old hand-inked waving stick figure with a 9-frame drawn-avatar
+// animation, cycled through preloaded textures at a fixed frame rate.
 
 function strokeWobbled(ctx: Canvas2D, points: readonly Point[], close = false): void {
   if (points.length === 0) return;
@@ -339,83 +337,42 @@ function strokeWobbled(ctx: Canvas2D, points: readonly Point[], close = false): 
   ctx.stroke();
 }
 
-function inkWobbleLine(ctx: Canvas2D, x1: number, y1: number, x2: number, y2: number, seed: number, amplitude = 2): void {
-  strokeWobbled(ctx, wobbleLine(x1, y1, x2, y2, { seed, amplitude, segments: 6 }));
+const AVATAR_FRAME_COUNT = 9;
+const AVATAR_FPS = 8;
+// frames are 1024x1024 — the plane must stay square or the figure squeezes
+const AVATAR_WIDTH = 1.6;
+const AVATAR_HEIGHT = 1.6;
+
+/** Cycles the 9 drawn-avatar frames (textures/corridor/avatar_anim/1..9.webp)
+ * on a single plane at ~8fps — advances by elapsed time each frame rather
+ * than a fixed per-tick counter, so playback rate stays independent of the
+ * render frame rate. */
+function AvatarFlipbook({ position }: { position: [number, number, number] }): JSX.Element {
+  const frames = useMemo(
+    () =>
+      Array.from({ length: AVATAR_FRAME_COUNT }, (_, i) => assetTexture(`textures/corridor/avatar_anim/${i + 1}.webp`)),
+    [],
+  );
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+
+  useFrame(({ clock }) => {
+    const material = materialRef.current;
+    if (!material) return;
+    const index = Math.floor(clock.elapsedTime * AVATAR_FPS) % AVATAR_FRAME_COUNT;
+    const frame = frames[index];
+    if (material.map !== frame) {
+      material.map = frame;
+      material.needsUpdate = true;
+    }
+  });
+
+  return (
+    <mesh position={position}>
+      <planeGeometry args={[AVATAR_WIDTH, AVATAR_HEIGHT]} />
+      <meshBasicMaterial ref={materialRef} map={frames[0]} transparent alphaTest={0.05} />
+    </mesh>
+  );
 }
-
-let wandererTexture: THREE.Texture | null = null;
-/** Hand-drawn wanderer: circle head, wobbled torso, two legs, one arm down
- * and one arm raised mid-wave — the corridor's entry focal point (brief:
- * "centered hand-drawn avatar/wanderer figure ... simple idle/wave pose"). */
-function getWandererTexture(): THREE.Texture {
-  if (wandererTexture) return wandererTexture;
-  const size = 256;
-  const { canvas, ctx } = createLocalCanvas(size, size);
-  ctx.clearRect(0, 0, size, size);
-
-  const cx = size * 0.46;
-  ctx.save();
-  ctx.strokeStyle = PALETTE.ink;
-  ctx.lineWidth = size * 0.018;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-
-  // torso: a wobbled rounded quad, ink-outlined with a blue-wash shirt
-  const torso: Point[] = [
-    { x: cx - size * 0.13, y: size * 0.42 },
-    { x: cx + size * 0.13, y: size * 0.42 },
-    { x: cx + size * 0.11, y: size * 0.68 },
-    { x: cx - size * 0.11, y: size * 0.68 },
-  ];
-  const torsoPts = wobbleClosedPolygon(torso, { seed: 31, amplitude: 2 });
-  strokeWobbled(ctx, torsoPts, true);
-  ctx.save();
-  ctx.fillStyle = PALETTE.blue;
-  ctx.globalAlpha = 0.22;
-  ctx.beginPath();
-  ctx.moveTo(torsoPts[0].x, torsoPts[0].y);
-  torsoPts.slice(1).forEach((p) => ctx.lineTo(p.x, p.y));
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
-
-  // head: wobbled circle
-  const headR = size * 0.11;
-  const headCy = size * 0.28;
-  const headPts: Point[] = [];
-  for (let i = 0; i < 20; i++) {
-    const a = (i / 20) * Math.PI * 2;
-    headPts.push({ x: cx + Math.cos(a) * headR, y: headCy + Math.sin(a) * headR });
-  }
-  strokeWobbled(ctx, wobbleClosedPolygon(headPts, { seed: 32, amplitude: 1.4 }), true);
-
-  // legs
-  inkWobbleLine(ctx, cx - size * 0.07, size * 0.68, cx - size * 0.12, size * 0.92, 33, 2);
-  inkWobbleLine(ctx, cx + size * 0.07, size * 0.68, cx + size * 0.1, size * 0.92, 34, 2);
-
-  // left arm, down at the side
-  inkWobbleLine(ctx, cx - size * 0.12, size * 0.46, cx - size * 0.2, size * 0.64, 35, 1.6);
-
-  // right arm, raised mid-wave (two segments: shoulder->elbow, elbow->hand)
-  inkWobbleLine(ctx, cx + size * 0.12, size * 0.46, cx + size * 0.22, size * 0.36, 36, 1.6);
-  inkWobbleLine(ctx, cx + size * 0.22, size * 0.36, cx + size * 0.16, size * 0.18, 37, 1.6);
-
-  ctx.restore();
-
-  const texture = wrapLocalTexture(canvas);
-  wandererTexture = texture;
-  return texture;
-}
-
-// ---- year markers ----------------------------------------------------------
-
-const YEAR_MARKERS: { year: string; z: number; accent: string }[] = [
-  { year: '2018', z: 8, accent: PALETTE.blue },
-  { year: '2020', z: -6, accent: PALETTE.green },
-  { year: '2022', z: -24, accent: PALETTE.amber },
-  { year: '2024', z: -42, accent: PALETTE.red },
-  { year: '2026', z: -60, accent: PALETTE.blue },
-];
 
 // ---- wall-decor rhythm (repeats every segment, not just DOORS_SEGMENT_INDEX)
 // Punchlist #4/#9/#20/#21: mid/deep segments had zero set-dressing (only
@@ -445,13 +402,13 @@ type WallDoodleKind =
 // past the original six — top gap #1: "hallway still reads sparse/CAD
 // between doors", "every screen-width shows 2-3 charming elements" wasn't
 // actually landing once a visitor scrolled past the first slot cluster.
+// 'coffeeCup' (z=-10), 'gear' (z=-22) and 'paperPlane' (z=-34) were dropped
+// from here in favor of the hand-drawn webp versions at the same z/side —
+// see IMAGE_DECOR_SLOTS below.
 const DECOR_SLOTS: { id: WallDoodleKind; z: number; side: 'left' | 'right' }[] = [
   { id: 'sheet', z: -4, side: 'right' },
-  { id: 'coffeeCup', z: -10, side: 'left' },
   { id: 'trophy', z: -16, side: 'right' },
-  { id: 'gear', z: -22, side: 'left' },
   { id: 'rosette', z: -28, side: 'right' },
-  { id: 'paperPlane', z: -34, side: 'left' },
   { id: 'db', z: -40, side: 'right' },
   { id: 'awardPlaque', z: -46, side: 'left' },
   { id: 'deskLamp', z: -52, side: 'right' },
@@ -460,7 +417,30 @@ const DECOR_SLOTS: { id: WallDoodleKind; z: number; side: 'left' | 'right' }[] =
   { id: 'pin', z: -70, side: 'left' },
 ];
 
+/** Three canvas-drawn DECOR_SLOTS entries (coffeeCup/gear/paperPlane) swapped
+ * for their hand-drawn webp counterparts, at the same z/side those ids used
+ * to occupy — static textured planes, no reveal/hover pair. */
+const IMAGE_DECOR_SLOTS: { path: string; z: number; side: 'left' | 'right'; size: number }[] = [
+  { path: 'textures/corridor/decorations/coffee_debug.webp', z: -10, side: 'left', size: 0.7 },
+  { path: 'textures/corridor/decorations/idea_process.webp', z: -22, side: 'left', size: 0.8 },
+  { path: 'textures/corridor/decorations/paper_ball.webp', z: -34, side: 'left', size: 0.55 },
+];
+
 const CEILING_LIGHT_SLOTS: number[] = [-4, -22, -40, -58, -76];
+
+/** A single static hand-drawn webp decoration mounted flush on a corridor
+ * wall — no hover/click affordance, unlike WallDoodle's canvas doodles. */
+function WallDecorImage({ path, z, side, size }: { path: string; z: number; side: 'left' | 'right'; size: number }): JSX.Element {
+  const texture = useMemo(() => assetTexture(path), [path]);
+  const x = side === 'left' ? -CORRIDOR_WIDTH / 2 + 0.02 : CORRIDOR_WIDTH / 2 - 0.02;
+  const rotY = side === 'left' ? Math.PI / 2 : -Math.PI / 2;
+  return (
+    <mesh position={[x, 1.8, z]} rotation={[0, rotY, 0]}>
+      <planeGeometry args={[size, size]} />
+      <meshBasicMaterial map={texture} transparent alphaTest={0.05} side={THREE.DoubleSide} />
+    </mesh>
+  );
+}
 
 /** One recycled floor/wall/ceiling shell covering a full segmentLength. */
 function SegmentShell({ segmentIndex }: { segmentIndex: number }): JSX.Element {
@@ -669,35 +649,6 @@ function WallDoodle({ id, z, side }: { id: WallDoodleKind; z: number; side: 'lef
   );
 }
 
-const YEAR_PLAQUE_W = 1.65;
-const YEAR_PLAQUE_H = 0.82;
-
-function YearMarker({ year, z, accent }: { year: string; z: number; accent: string }): JSX.Element {
-  const textures = useTextures();
-  // Top gap #3: still "barely legible" at size 64 on a bare 1.1x0.5 plane —
-  // bumped again (64 -> 92) and backed with a small plaque (matching the
-  // sign-board/plate language used everywhere else in the corridor) so the
-  // ink has contrast against the wall paper instead of floating on it.
-  const texture = useMemo(() => textures.text(year, { font: 'hand', size: 92, color: PALETTE.ink }), [textures, year]);
-  const plaqueGeom = useMemo(() => new THREE.BoxGeometry(YEAR_PLAQUE_W, YEAR_PLAQUE_H, 0.04), []);
-  return (
-    <group position={[CORRIDOR_WIDTH / 2 - 0.03, 2.35, z]} rotation={[0, -Math.PI / 2, 0]}>
-      <mesh geometry={plaqueGeom}>
-        <meshBasicMaterial color={BLUEPRINT.face} />
-      </mesh>
-      <Edges geometry={plaqueGeom} color={BLUEPRINT.line} opacity={0.55} />
-      <mesh position={[0, 0.06, 0.03]}>
-        <planeGeometry args={[1.45, 0.6]} />
-        <meshBasicMaterial map={texture} transparent />
-      </mesh>
-      <mesh position={[0, -0.32, 0.03]}>
-        <planeGeometry args={[1.15, 0.045]} />
-        <meshBasicMaterial color={accent} transparent opacity={0.9} />
-      </mesh>
-    </group>
-  );
-}
-
 const LIGHT_WIRE_LEN = 0.55;
 const LIGHT_SHADE_R = 0.26;
 const LIGHT_SHADE_H = 0.22;
@@ -760,6 +711,15 @@ function SegmentDecor({ segmentIndex }: { segmentIndex: number }): JSX.Element {
           z={repeatingZ(segmentIndex, slot.z, CORRIDOR.segmentLength)}
         />
       ))}
+      {IMAGE_DECOR_SLOTS.map((slot) => (
+        <WallDecorImage
+          key={`${segmentIndex}-${slot.path}`}
+          path={slot.path}
+          side={slot.side}
+          size={slot.size}
+          z={repeatingZ(segmentIndex, slot.z, CORRIDOR.segmentLength)}
+        />
+      ))}
       {CEILING_LIGHT_SLOTS.map((localZ, i) => (
         <CeilingLight key={`${segmentIndex}-light-${i}`} z={repeatingZ(segmentIndex, localZ, CORRIDOR.segmentLength)} />
       ))}
@@ -790,21 +750,20 @@ const EGG_PLACEMENTS: {
   // reads fine at this height) and shrunk so its footprint clears the
   // subtitle's screen band instead of overlapping "Data &".
   { id: 'speedometer', position: [-2.9, 2.85, -9], size: 1.0 },
-  // Was z=-25, x=1.6 — almost exactly equidistant (7 units) between the
-  // 'journey' (z=-18) and 'warehouse' (z=-32) door slots, so from typical
-  // corridor camera angles its silhouette consistently lined up with a door
-  // frame. DECOR_SLOTS packs a WallDoodle every 6 units along the walls
-  // (x=+-2.98) for the corridor's whole length, alternating sides, so ANY
-  // x near a wall keeps landing close to some doodle at some z (z=-72 sat
-  // 8 units from the segment-loop seam and rendered giant via the recycled
-  // previous-segment copy; z=-38 merged with the 'db' doodle at z=-40;
-  // z=-44 still merged with it from a mid-corridor approach). Moved to
-  // x=0 instead — centered on the rug, ~3 world units from every
-  // wall-mounted door/doodle regardless of z, which is what actually
-  // guarantees separation rather than chasing one more z offset. z=-44 kept
-  // for its door/seam clearance (see above); size trimmed slightly so it
-  // reads as a duck sitting on the rug rather than a floor-wide sprite.
-  { id: 'rubberDuck', position: [0, 0.85, -44], size: 1.3 },
+  // Was centered on the rug (x=0, y=0.85) — floating above the corridor's
+  // center rug-runner strip made it read as floating mid-hall, and the
+  // rug's own hand-inked border rectangle right behind it was exactly what
+  // got reported as "a doodle on a paper card" (a visible bounding
+  // rectangle), even though the duck's own texture is ink-only on
+  // transparent (textures/notebook.ts's drawDuck). Moved to the side of the
+  // hallway at floor level instead: x=2.6 sits near the right wall (inside
+  // CORRIDOR_WIDTH/2=3) on bare wood floor, clear of the center rug; y=0.25
+  // grounds it at floor height instead of floating. z=-44 kept — it was
+  // already vetted for door/seam clearance (nowhere near the 'journey'
+  // z=-18 / 'warehouse' z=-32 door slots or the segment-loop seam), and at
+  // floor height (vs DECOR_SLOTS' y=1.8 wall doodles) there's no vertical
+  // overlap with wall decor regardless of x.
+  { id: 'rubberDuck', position: [2.6, 0.25, -44], size: 1.3 },
   { id: 'serverRack', position: [2.9, 1.3, -55] },
 ];
 
@@ -838,9 +797,6 @@ function DoorsSegmentContent({ segmentIndex }: { segmentIndex: number }): JSX.El
     <group>
       {doors}
       {eggs}
-      {YEAR_MARKERS.map((m) => (
-        <YearMarker key={m.year} year={m.year} z={repeatingZ(segmentIndex, m.z, CORRIDOR.segmentLength)} accent={m.accent} />
-      ))}
     </group>
   );
 }
@@ -851,21 +807,18 @@ function DoorsSegmentContent({ segmentIndex }: { segmentIndex: number }): JSX.El
  * segment: it's a one-time "title card" beat, not repeating set-dressing. */
 function EntryHero(): JSX.Element {
   const worldData = useWorldData();
-  const wanderer = useMemo(() => getWandererTexture(), []);
   // Big outlined bubble-letter name framing the hallway (the itomdev entry
-  // hero) with the tagline hand-written beneath; the wanderer stands in
-  // front, waving; a paper plane drifts past the letters.
+  // hero) with the tagline hand-written beneath; the drawn-avatar flipbook
+  // stands in front; a paper plane drifts past the letters.
   const firstName = worldData.meta.name.split(/\s+/)[0] || worldData.meta.name;
 
   return (
     <group position={[0, 0, -3]}>
-      {/* wanderer: ~30% of CORRIDOR_HEIGHT, standing on the floor */}
-      <mesh position={[0, (CORRIDOR_HEIGHT * 0.3) / 2, 0]}>
-        <planeGeometry args={[CORRIDOR_HEIGHT * 0.3, CORRIDOR_HEIGHT * 0.3]} />
-        <meshBasicMaterial map={wanderer} transparent />
-      </mesh>
+      {/* drawn-avatar flipbook, feet on the floor (replaces the old
+          hand-inked waving stick figure) */}
+      <AvatarFlipbook position={[0, AVATAR_HEIGHT / 2, 0]} />
       {/* nudged up from 0.6 -> 0.67 (top gap #5) so the title clears the
-          wanderer's raised hand instead of sitting right on top of it */}
+          avatar's raised hand instead of sitting right on top of it */}
       <OutlineTitle
         text={firstName}
         sub={`< ${worldData.meta.tagline} />`}

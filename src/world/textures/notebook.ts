@@ -840,6 +840,13 @@ function drawPin(ctx: Canvas2D, size: number, mode: DoodleMode, seed: number, ac
 }
 
 function drawDuck(ctx: Canvas2D, size: number, mode: DoodleMode, seed: number, accent: string): void {
+  // Explicit transparent clear — the corridor's rubber-duck easter egg was
+  // reported as rendering "on a paper card" (a visible bounding rectangle),
+  // which traced to the egg standing over the center rug-runner strip
+  // rather than to anything drawn here. Guaranteed anyway: this doodle must
+  // never carry a background fill, only ink, unlike drawParcel's
+  // intentional opaque-face fill above.
+  ctx.clearRect(0, 0, size, size);
   const cx = size * 0.46;
   const cy = size * 0.58;
   ctx.save();
