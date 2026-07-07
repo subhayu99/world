@@ -17,17 +17,14 @@ import { useAudio, useWorldData } from '../state/hooks';
 import { BLUEPRINT } from '../blueprint/palette';
 import { Edges } from '../blueprint/primitives';
 import { CAT_EYES, catTexture, doorTexture, signTexture } from '../blueprint/sketch';
+import { assetTexture } from '../assets';
 import {
   bricksTexture,
   doorwayHallTexture,
-  bugFixedTexture,
-  bugTexture,
   doorStickersTexture,
   grassTexture,
   hangingMouseTexture,
-  planterTexture,
   stonePathTexture,
-  treeTexture,
   windowFigureTexture,
   windowFrameTexture,
 } from './textures';
@@ -349,17 +346,19 @@ function EntranceCat({ lines }: { lines: string[] }) {
 /** The bug: crawls along the wall; click squashes it into BUG FIXED! */
 function Bug() {
   const audio = useAudio();
-  const tex = useMemo(() => bugTexture(), []);
-  const splat = useMemo(() => bugFixedTexture(), []);
+  const tex = useMemo(() => assetTexture('textures/entrance/bug_sketch.webp'), []);
+  const splat = useMemo(() => assetTexture('images/ink-splash.webp'), []);
   const ref = useRef<THREE.Group>(null);
   const [fixed, setFixed] = useState<[number, number] | null>(null);
   const t0 = useRef(Math.random() * 20);
   useFrame(({ clock }) => {
     if (fixed || !ref.current) return;
     const t = clock.elapsedTime * 0.07 + t0.current;
-    // slow figure-eight wander on the right half of the wall
-    const x = 6.8 + Math.sin(t) * 1.6;
-    const y = 4.6 + Math.sin(t * 2) * 0.9;
+    // slow figure-eight wander on the right half of the wall, clamped to
+    // stay within the brick wall's visible extent (WALL_W=26, WALL_H=10 at
+    // WALL_Z=20) so the bug never drifts off-screen
+    const x = THREE.MathUtils.clamp(6.8 + Math.sin(t) * 1.6, -11, 11);
+    const y = THREE.MathUtils.clamp(4.6 + Math.sin(t * 2) * 0.9, 1, 9);
     const dx = Math.cos(t) * 1.6;
     const dy = Math.cos(t * 2) * 1.8;
     ref.current.position.set(x, y, WALL_Z + 0.08);
@@ -367,9 +366,9 @@ function Bug() {
   });
   if (fixed) {
     return (
-      <mesh position={[fixed[0] + 0.55, fixed[1], WALL_Z + 0.08]}>
-        <planeGeometry args={[2.2, 1.1]} />
-        <meshBasicMaterial map={splat} transparent depthWrite={false} />
+      <mesh position={[fixed[0], fixed[1], WALL_Z + 0.08]}>
+        <planeGeometry args={[0.63, 0.63]} />
+        <meshBasicMaterial map={splat} transparent alphaTest={0.05} depthWrite={false} />
       </mesh>
     );
   }
@@ -388,8 +387,8 @@ function Bug() {
         }}
         onPointerOut={() => setCursor(false)}
       >
-        <planeGeometry args={[0.42, 0.42]} />
-        <meshBasicMaterial map={tex} transparent depthWrite={false} />
+        <planeGeometry args={[0.36, 0.46]} />
+        <meshBasicMaterial map={tex} transparent alphaTest={0.05} depthWrite={false} />
       </mesh>
     </group>
   );
@@ -397,7 +396,7 @@ function Bug() {
 
 /** Tree + the computer mouse hanging from its branch, swinging. */
 function Tree() {
-  const tree = useMemo(() => treeTexture(), []);
+  const tree = useMemo(() => assetTexture('textures/entrance/tree_sketch.webp'), []);
   const mouse = useMemo(() => hangingMouseTexture(), []);
   const mouseRef = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
@@ -406,8 +405,8 @@ function Tree() {
   return (
     <group position={[-7.6, 0, WALL_Z + 0.9]}>
       <mesh position={[0, 3.1, 0]}>
-        <planeGeometry args={[4.4, 6.6]} />
-        <meshBasicMaterial map={tree} transparent depthWrite={false} />
+        <planeGeometry args={[7, 6.6]} />
+        <meshBasicMaterial map={tree} transparent alphaTest={0.05} depthWrite={false} />
       </mesh>
       {/* mouse hangs from the right branch; pivot at the branch point */}
       <group ref={mouseRef} position={[1.42, 3.15, 0.05]}>

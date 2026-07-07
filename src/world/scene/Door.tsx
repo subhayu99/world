@@ -8,13 +8,14 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
 import gsap from 'gsap';
-import type { RoomCopy } from '../types';
+import type { RoomCopy, RoomId } from '../types';
 import { DOOR_TIMING } from '../contracts';
 import { useAudio, useWorldStore } from '../state/hooks';
 import { PALETTE } from '../textures/notebook';
 import { BLUEPRINT } from '../blueprint/palette';
 import { Edges } from '../blueprint/primitives';
-import { doorTexture, signTexture } from '../blueprint/sketch';
+import { signTexture } from '../blueprint/sketch';
+import { assetTexture } from '../assets';
 import { CORRIDOR_HEIGHT } from './segments';
 
 export interface DoorProps {
@@ -31,6 +32,20 @@ const DOOR_WIDTH = 2.2;
 // through/behind it from every camera angle. Shrinking the door itself
 // opens headroom for the sign without touching CORRIDOR_HEIGHT.
 const DOOR_HEIGHT = 2.3;
+
+// Room-specific hand-drawn door face art (public/textures/corridor/doors/).
+// Unpainted is the rest state; the '_painted' twin crossfades in on hover
+// via the existing brownMaterial overlay plane.
+const DOOR_TEXTURE_NAME: Record<RoomId, string> = {
+  journey: 'drzwiabout',
+  warehouse: 'drzwiprojekty',
+  registry: 'drzwisocial',
+  contact: 'drzwikontakt',
+};
+
+// Cracked-open hover hint, not a full swing (that happens on click). Was
+// 1.1 rad (~63°) — read as the door standing wide open onto empty grey.
+const HOVER_AJAR_RAD = 0.2;
 
 const SIGN_GAP = 0.3;
 // Wooden sign board over the door — wide and legible from the walk line.
@@ -60,16 +75,20 @@ export function Door({ room, position, side }: DoorProps): JSX.Element {
   const audio = useAudio();
   const store = useWorldStore();
 
-  // Wooden panelled door: grey pencil wood with a colored-pencil brown
-  // variant that fades in on hover — itomdev's "hovering a door colours
-  // only that door's wood".
-  const doorGrey = useMemo(() => doorTexture(false), []);
-  const doorBrown = useMemo(() => doorTexture(true), []);
+  // Drawn door face art: rest-state sketch + a painted twin that fades in
+  // on hover — itomdev's "hovering a door colours only that door's wood".
+  const doorName = DOOR_TEXTURE_NAME[room.id];
+  const doorFront = useMemo(() => assetTexture(`textures/corridor/doors/${doorName}.webp`), [doorName]);
+  const doorFrontPainted = useMemo(
+    () => assetTexture(`textures/corridor/doors/${doorName}_painted.webp`),
+    [doorName],
+  );
+  const doorBack = useMemo(() => assetTexture('textures/corridor/doors/backsingledoors.webp'), []);
   const signGrey = useMemo(() => signTexture(room.label, { colored: false }), [room.label]);
   const signBrown = useMemo(() => signTexture(room.label, { colored: true }), [room.label]);
   const brownMaterial = useMemo(
-    () => new THREE.MeshBasicMaterial({ map: doorBrown, transparent: true, opacity: 0 }),
-    [doorBrown],
+    () => new THREE.MeshBasicMaterial({ map: doorFrontPainted, transparent: true, opacity: 0, side: THREE.FrontSide }),
+    [doorFrontPainted],
   );
   const signBrownMaterial = useMemo(
     () => new THREE.MeshBasicMaterial({ map: signBrown, transparent: true, opacity: 0 }),
@@ -100,10 +119,11 @@ export function Door({ room, position, side }: DoorProps): JSX.Element {
     document.body.style.cursor = 'pointer';
     audio.play('doorCreak', { volume: 0.8 });
     if (doorRef.current) {
-      // Auto-open wide on hover so the room invites you in; the camera
-      // simultaneously turns to face the door (CameraRig listens below).
+      // Nudge ajar on hover — just a crack, inviting but not fully open;
+      // the camera simultaneously turns to face the door (CameraRig
+      // listens below). The full swing happens on click, not here.
       gsap.to(doorRef.current.rotation, {
-        y: swingSign(side) * 1.1,
+        y: swingSign(side) * HOVER_AJAR_RAD,
         duration: 0.55,
         ease: 'power2.out',
       });
@@ -174,8 +194,8 @@ export function Door({ room, position, side }: DoorProps): JSX.Element {
             <meshBasicMaterial attach="material-1" color="#d8d5cc" />
             <meshBasicMaterial attach="material-2" color="#d8d5cc" />
             <meshBasicMaterial attach="material-3" color="#d8d5cc" />
-            <meshBasicMaterial attach="material-4" map={doorGrey} />
-            <meshBasicMaterial attach="material-5" map={doorGrey} />
+            <meshBasicMaterial attach="material-4" map={doorFront} transparent side={THREE.FrontSide} />
+            <meshBasicMaterial attach="material-5" map={doorBack} transparent />
           </mesh>
           <mesh position={[0, 0, 0.051]}>
             <planeGeometry args={[DOOR_WIDTH, DOOR_HEIGHT]} />

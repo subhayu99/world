@@ -16,8 +16,9 @@ import { useAchievements, useAudio, useWorldData } from '../state/hooks';
 import { BLUEPRINT, DRAFT_FONT_FAMILY } from '../blueprint/palette';
 import { PaperPlane } from '../blueprint/primitives';
 import { gridTexture } from '../blueprint/sheets';
-import { Balloon, Cloud, OutlineTitle, RockIsland } from '../blueprint/props';
-import { certificateTexture, cumulusTexture, ensureDraftFont } from '../blueprint/sketch';
+import { Balloon, OutlineTitle, RockIsland } from '../blueprint/props';
+import { certificateTexture, ensureDraftFont } from '../blueprint/sketch';
+import { assetTexture } from '../assets';
 import { chapterTitleT, lapWindowFade, seededRand } from './journeyLayout';
 
 export interface JourneyProps {
@@ -82,6 +83,64 @@ const AWARDS_LATERAL = 9;
  * `tone` is near-white, which reads as white-on-white against the sky mid
  * flight — see itomdev-research/world-judge/live-journey.png). */
 const PLANE_TONE = '#d6d2c4';
+
+// ---- cloud image sprites ----
+// Drawn cloud textures (public/textures/clouds/) replace the old procedural
+// cumulus/wisp canvases. seed % 8 keeps each Cloud/PartingClouds instance
+// pinned to a stable image across re-renders.
+const CLOUD_IMAGES = [
+  '1131c3eb-dfae-423f-924b-ff39d8ccd6dc.webp',
+  '254b8ec8-d6f7-4275-956f-7bab65b2ce2d.webp',
+  '2cc88dd1-483c-466d-b07e-f8308c61ccbe.webp',
+  '5606fcc0-3252-447d-a58a-7bcbac73229a.webp',
+  '7882dc72-3d01-41fb-ac0e-d07b0184ebc1.webp',
+  '9b2ca72f-7bd0-473b-ba6e-dd9e0eb79d35.webp',
+  'c83293c6-d90c-4a32-8d9d-5ac9af7e2296.webp',
+  'f6e358bc-d27c-41dd-95f4-6787a835c41e.webp',
+];
+
+function cloudImageTexture(seed: number): THREE.Texture {
+  const idx = ((seed % CLOUD_IMAGES.length) + CLOUD_IMAGES.length) % CLOUD_IMAGES.length;
+  return assetTexture(`textures/clouds/${CLOUD_IMAGES[idx]}`);
+}
+
+/** Billboard cloud sprite — drawn-image stand-in for blueprint/props.tsx's
+ * procedural Cloud (that file is frozen, not editable here). Same
+ * seed/width/wisp/opacity/billboard contract as the procedural version, so
+ * every existing call site (AwardsRun, SkillsMoment) is unchanged; only the
+ * texture source and material differ. `wisp` still picks the old aspect
+ * ratio (not the image) so each instance keeps its previously-tuned scale. */
+function Cloud({
+  seed = 1,
+  width = 6,
+  wisp = false,
+  opacity = 1,
+  billboard = true,
+  position,
+}: {
+  seed?: number;
+  width?: number;
+  wisp?: boolean;
+  opacity?: number;
+  billboard?: boolean;
+  position?: [number, number, number];
+}) {
+  const texture = useMemo(() => cloudImageTexture(seed), [seed]);
+  const aspect = wisp ? 512 / 200 : 512 / 340;
+  const ref = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+  useFrame(() => {
+    if (billboard && ref.current) ref.current.quaternion.copy(camera.quaternion);
+  });
+  return (
+    <group ref={ref} position={position}>
+      <mesh>
+        <planeGeometry args={[width, width / aspect]} />
+        <meshBasicMaterial map={texture} transparent alphaTest={0.05} depthWrite={false} opacity={opacity} />
+      </mesh>
+    </group>
+  );
+}
 
 // ---- brighter station-sheet texture ----
 // sheets.ts's sheetTexture() renders BLUEPRINT.face (off-white) panels that
@@ -409,7 +468,7 @@ interface CloudSeed {
   base: THREE.Vector3;
   width: number;
   phase: number;
-  texture: THREE.CanvasTexture;
+  texture: THREE.Texture;
 }
 
 /** Cumulus billboards flanking the flight path. Clouds drift slowly and PART
@@ -428,7 +487,7 @@ function PartingClouds({ curve, planePos, zOffset = 0 }: { curve: THREE.CatmullR
         base: p.clone().add(new THREE.Vector3(side * lateral, -1.5 + (i % 5) * 1.6, -1 - (i % 3) * 2)),
         width: 3.6 + (i % 4) * 1.8,
         phase: i * 1.7,
-        texture: cumulusTexture(i + 1),
+        texture: cloudImageTexture(i + 1),
       });
     }
     return list;
@@ -463,7 +522,7 @@ function PartingClouds({ curve, planePos, zOffset = 0 }: { curve: THREE.CatmullR
       {clouds.map((c, i) => (
         <mesh key={i} position={c.base.toArray()} renderOrder={-1}>
           <planeGeometry args={[c.width, c.width * (340 / 512)]} />
-          <meshBasicMaterial map={c.texture} transparent depthWrite={false} opacity={0.95} />
+          <meshBasicMaterial map={c.texture} transparent alphaTest={0.05} depthWrite={false} opacity={0.95} />
         </mesh>
       ))}
     </group>

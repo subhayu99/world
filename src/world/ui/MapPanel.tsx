@@ -1,14 +1,17 @@
-// Hand-drawn site map: a corridor spine with four room vignettes (trophy =
-// journey, box = warehouse, parcel-stack = registry, envelope = contact).
-// Pin geometry + visited/current classification comes from mapLayout.ts
-// (pure, unit-tested); this file owns only the SVG markup.
+// Hand-drawn site map: the drawn map artwork (public/images/map.webp) with
+// one absolutely-positioned teleport pin per room layered on top. Status
+// classification (current / visited / unvisited) still comes from
+// mapLayout.ts (pure, unit-tested); pin *positions over the image* are
+// inline here because the image's vignettes don't follow mapLayout's
+// corridor-spine viewBox coordinates.
 
 import { useEffect, useRef } from 'react';
 import { BLUEPRINT } from '../blueprint/palette';
 import { useWorldStore } from '../state/hooks';
-import { MAP_VIEWBOX_HEIGHT, MAP_VIEWBOX_WIDTH, getPinsWithStatus } from './mapLayout';
-import type { PinIcon, PinStatus } from './mapLayout';
-import { PANEL_DROP_SHADOW, PANEL_PAPER_BACKGROUND, PANEL_TORN_CLIP, PAPER_COLORS, ROUGHEN_FILTER_ID } from './progress';
+import { getPinsWithStatus } from './mapLayout';
+import type { PinStatus } from './mapLayout';
+import { PANEL_DROP_SHADOW, PANEL_PAPER_BACKGROUND, PANEL_TORN_CLIP, PAPER_COLORS } from './progress';
+import type { RoomId } from '../types';
 
 export interface MapPanelProps {
   open: boolean;
@@ -24,62 +27,46 @@ const PAPER = PAPER_COLORS.paper;
 const ACCENT_VISITED = BLUEPRINT.accentCool; // pastel blue — "already been here"
 const ACCENT_CURRENT = BLUEPRINT.accent; // pastel coral — "active room"
 // "You are here" pushpin — a distinct marker layered on top of the current
-// room's icon, separate from the visited/current fill logic below
-// (punch-list #13's literal ask: "a pushpin/marker (red) showing the
-// visitor's current location"). Amber so it pops against the coral
-// current-room fill instead of blending into it.
+// room's chip. Amber so it pops against the coral current-room fill.
 const ACCENT_HERE_PIN = BLUEPRINT.accentWarm;
 
-function pinIconPath(icon: PinIcon): React.ReactNode {
-  switch (icon) {
-    case 'trophy':
-      return (
-        <>
-          <path d="M-6 -8h12v6a6 6 0 01-12 0v-6z" />
-          <path d="M-6 -6h-3v3a3 3 0 003 3 M6 -6h3v3a3 3 0 01-3 3" />
-          <path d="M0 4v4 M-4 10h8" />
-        </>
-      );
-    case 'box':
-      return (
-        <>
-          <path d="M-8 -4l8-4 8 4-8 4-8-4z" />
-          <path d="M-8 -4v8l8 4 8-4v-8" />
-          <path d="M0 0v8" />
-        </>
-      );
-    case 'parcel-stack':
-      return (
-        <>
-          <rect x={-7} y={2} width={14} height={6} />
-          <rect x={-5} y={-4} width={10} height={6} />
-          <rect x={-3} y={-9} width={6} height={5} />
-        </>
-      );
-    case 'envelope':
-      return (
-        <>
-          <rect x={-9} y={-6} width={18} height={12} />
-          <path d="M-9 -6l9 7 9-7" />
-        </>
-      );
-    default:
-      return null;
-  }
-}
+/** Where each room's pin sits over the drawn map image, in percentages of
+ * the image box. The drawn map spreads vignettes around a central tower
+ * (paper plane upper-left, dock upper-right, device stack mid-right,
+ * skyline lower-left); pins sit near those vignettes in a readable spread.
+ * Inline by design — mapLayout.ts's viewBox coords describe the old SVG
+ * corridor diagram, not this artwork. */
+const PIN_IMAGE_POSITIONS: Record<RoomId, { left: string; top: string; tilt: number }> = {
+  journey: { left: '23%', top: '38%', tilt: -3 },
+  warehouse: { left: '76%', top: '24%', tilt: 3 },
+  registry: { left: '72%', top: '58%', tilt: -2 },
+  contact: { left: '26%', top: '76%', tilt: 2 },
+};
 
-function fillFor(status: PinStatus): string {
+function chipBackground(status: PinStatus): string {
   if (status === 'current') return ACCENT_CURRENT;
   if (status === 'visited') return ACCENT_VISITED;
-  return 'none';
+  return PAPER;
 }
 
-/** Small hand-drawn "here" flag: a teardrop pin + dot, distinct from the
- * room's own icon glyph so the current-location marker reads unambiguously
- * as a landmark rather than just a recolored icon. */
+/** Small hand-drawn "here" flag: a teardrop pin + dot, layered above the
+ * current room's chip so the current-location marker reads unambiguously. */
 function PushpinMarker() {
   return (
-    <g transform="translate(0, -20)" aria-hidden="true">
+    <svg
+      width="16"
+      height="18"
+      viewBox="-8 -8 16 22"
+      aria-hidden="true"
+      style={{
+        position: 'absolute',
+        left: '50%',
+        top: 0,
+        transform: 'translate(-50%, -100%)',
+        pointerEvents: 'none',
+        display: 'block',
+      }}
+    >
       <path
         d="M0 13 L-4.5 2.5 A4.5 4.5 0 1 1 4.5 2.5 Z"
         fill={ACCENT_HERE_PIN}
@@ -88,7 +75,7 @@ function PushpinMarker() {
         strokeLinejoin="round"
       />
       <circle cx={0} cy={0} r={1.5} fill={INK} />
-    </g>
+    </svg>
   );
 }
 
@@ -177,101 +164,52 @@ export function MapPanel({ open, onClose }: MapPanelProps) {
           &times;
         </button>
       </div>
-      <svg
-        viewBox={`0 0 ${MAP_VIEWBOX_WIDTH} ${MAP_VIEWBOX_HEIGHT}`}
-        style={{ width: '100%', height: 'auto', display: 'block' }}
-        role="img"
-        aria-label="Map of the four rooms along the corridor"
-      >
-        {/* corridor spine: a soft accent underlay pass plus a thicker ink
-            line on top (punch-list #13: "bolder illustration ... thicker
-            corridor spine"), both hand-jittered rather than ruler-straight */}
-        <path
-          d={`M 50 0 L 47 30 L 52 60 L 48 90 L 51 120 L 49 ${MAP_VIEWBOX_HEIGHT}`}
-          fill="none"
-          stroke={ACCENT_VISITED}
-          strokeOpacity={0.25}
-          strokeWidth={5.5}
-          strokeLinecap="round"
+      {/* The drawn map artwork with room pins overlaid at fixed percentage
+          spots. The wrapper is position:relative so pins track the image
+          box at any panel width. */}
+      <div style={{ position: 'relative' }}>
+        <img
+          src={`${import.meta.env.BASE_URL}images/map.webp`}
+          alt="Map of the four rooms along the corridor"
+          draggable={false}
+          style={{ width: '100%', height: 'auto', display: 'block', userSelect: 'none' }}
         />
-        <path
-          d={`M 50 0 L 47 30 L 52 60 L 48 90 L 51 120 L 49 ${MAP_VIEWBOX_HEIGHT}`}
-          fill="none"
-          stroke={INK}
-          strokeWidth={2.4}
-          strokeLinecap="round"
-        />
-
-        {pins.map((pin) => (
-          <g key={pin.room} transform={`translate(${pin.x}, ${pin.y})`}>
-            {/* room vignette: a soft landmark halo behind every pin, tinted
-                by status, so the map reads as illustrated terrain rather
-                than a bare icon list */}
-            <ellipse
-              cx={0}
-              cy={2}
-              rx={17}
-              ry={15}
-              fill={pin.status === 'unvisited' ? INK : fillFor(pin.status)}
-              fillOpacity={pin.status === 'unvisited' ? 0.05 : 0.16}
-              stroke="none"
-            />
-            <line x1={pin.side === 'left' ? 10 : -10} y1={0} x2={0} y2={0} stroke={INK} strokeWidth={1} />
-            {/* Small hand-placed "photo" card behind each room's icon — a
-                sticker/thumbnail frame rather than a bare glyph, tilted
-                opposite the pin's side for a scrapbook feel. Purely
-                decorative (pointerEvents: none) — the real hit target stays
-                the transparent rect inside the onClick group below. */}
-            <rect
-              x={-12.5}
-              y={-12.5}
-              width={25}
-              height={21}
-              rx={2.5}
-              transform={`rotate(${pin.side === 'left' ? -4 : 4} 0 -2)`}
-              fill={PAPER}
-              stroke={INK}
-              strokeWidth={1}
-              strokeOpacity={pin.status === 'unvisited' ? 0.45 : 0.85}
-              style={{ pointerEvents: 'none' }}
-            />
-            <g
+        {pins.map((pin) => {
+          const pos = PIN_IMAGE_POSITIONS[pin.room];
+          return (
+            <button
+              key={pin.room}
+              type="button"
               onClick={() => handlePinClick(pin.room)}
-              style={{ cursor: 'pointer' }}
-              stroke={INK}
-              strokeWidth={1.3}
-              fill={fillFor(pin.status)}
-              fillOpacity={pin.status === 'unvisited' ? 0 : 0.85}
-              role="button"
               tabIndex={open ? 0 : -1}
               aria-label={`Teleport to ${pin.label}${pin.status === 'current' ? ' (you are here)' : ''}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handlePinClick(pin.room);
-                }
+              style={{
+                position: 'absolute',
+                left: pos.left,
+                top: pos.top,
+                transform: `translate(-50%, -50%) rotate(${pos.tilt}deg)`,
+                background: chipBackground(pin.status),
+                color: INK,
+                border: `1.5px solid ${INK}`,
+                borderRadius: '3px 8px 4px 7px', // uneven corners = hand-cut sticker
+                boxShadow: '1.5px 2px 0 rgba(60,42,20,0.25)',
+                padding: '0.15rem 0.5rem',
+                fontFamily: '"Patrick Hand", cursive',
+                fontSize: '0.72rem',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                lineHeight: 1.3,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                opacity: pin.status === 'unvisited' ? 0.85 : 1,
               }}
             >
-              {/* SVG hit-test only counts painted areas; fill is transparent
-                  here, so without this rect only the 1.3px strokes would be
-                  clickable. Covers icon + label. */}
-              <rect x={-14} y={-14} width={28} height={40} fill="transparent" stroke="none" style={{ pointerEvents: 'all' }} />
-              <g style={{ filter: `url(#${ROUGHEN_FILTER_ID})` }}>{pinIconPath(pin.icon)}</g>
-            </g>
-            {pin.status === 'current' && <PushpinMarker />}
-            <text
-              x={0}
-              y={20}
-              textAnchor="middle"
-              fontSize={7}
-              fill={INK}
-              style={{ fontFamily: '"Patrick Hand", cursive', pointerEvents: 'none' }}
-            >
               {pin.label}
-            </text>
-          </g>
-        ))}
-      </svg>
+              {pin.status === 'current' && <PushpinMarker />}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

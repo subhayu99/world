@@ -20,8 +20,9 @@ import { ROOM_ANCHORS } from '../contracts';
 import { WorldDataCtx, useAchievements, useAudio, useWorldData } from '../state/hooks';
 import { BLUEPRINT } from '../blueprint/palette';
 import { Edges } from '../blueprint/primitives';
-import { Barrel, Cloud, Lighthouse, PaperBoat, Signpost } from '../blueprint/props';
+import { Barrel, Lighthouse, PaperBoat, Signpost } from '../blueprint/props';
 import { pierTexture, seaTexture, woodTexture } from '../blueprint/sketch';
+import { assetTexture } from '../assets';
 import { ContactForm } from './ContactForm';
 
 interface ContactProps {
@@ -237,6 +238,64 @@ const SIGN_SLOTS: [number, number, number][] = [
  * plane instead of reading as a flat sand patch half-buried at the waterline. */
 const LIGHTHOUSE_POS: [number, number, number] = [-13, 1.55, -35];
 const LIGHTHOUSE_SCALE = 2.2;
+
+// ---- cloud image sprites ----
+// Drawn cloud textures (public/textures/clouds/) replace the old procedural
+// cumulus/wisp canvases. seed % 8 keeps each Cloud instance pinned to a
+// stable image across re-renders.
+const CLOUD_IMAGES = [
+  '1131c3eb-dfae-423f-924b-ff39d8ccd6dc.webp',
+  '254b8ec8-d6f7-4275-956f-7bab65b2ce2d.webp',
+  '2cc88dd1-483c-466d-b07e-f8308c61ccbe.webp',
+  '5606fcc0-3252-447d-a58a-7bcbac73229a.webp',
+  '7882dc72-3d01-41fb-ac0e-d07b0184ebc1.webp',
+  '9b2ca72f-7bd0-473b-ba6e-dd9e0eb79d35.webp',
+  'c83293c6-d90c-4a32-8d9d-5ac9af7e2296.webp',
+  'f6e358bc-d27c-41dd-95f4-6787a835c41e.webp',
+];
+
+function cloudImageTexture(seed: number): THREE.Texture {
+  const idx = ((seed % CLOUD_IMAGES.length) + CLOUD_IMAGES.length) % CLOUD_IMAGES.length;
+  return assetTexture(`textures/clouds/${CLOUD_IMAGES[idx]}`);
+}
+
+/** Billboard cloud sprite — drawn-image stand-in for blueprint/props.tsx's
+ * procedural Cloud (that file is frozen, not editable here). Same
+ * seed/width/wisp/opacity/billboard contract as the procedural version, so
+ * every existing call site below is unchanged; only the texture source and
+ * material differ. `wisp` still picks the old aspect ratio (not the image)
+ * so each instance keeps its previously-tuned scale. */
+function Cloud({
+  seed = 1,
+  width = 6,
+  wisp = false,
+  opacity = 1,
+  billboard = true,
+  position,
+}: {
+  seed?: number;
+  width?: number;
+  wisp?: boolean;
+  opacity?: number;
+  billboard?: boolean;
+  position?: [number, number, number];
+}) {
+  const texture = useMemo(() => cloudImageTexture(seed), [seed]);
+  const aspect = wisp ? 512 / 200 : 512 / 340;
+  const ref = useRef<THREE.Group>(null);
+  const { camera } = useThree();
+  useFrame(() => {
+    if (billboard && ref.current) ref.current.quaternion.copy(camera.quaternion);
+  });
+  return (
+    <group ref={ref} position={position}>
+      <mesh>
+        <planeGeometry args={[width, width / aspect]} />
+        <meshBasicMaterial map={texture} transparent alphaTest={0.05} depthWrite={false} opacity={opacity} />
+      </mesh>
+    </group>
+  );
+}
 
 /** CLOUDS[0] used to sit at [-15, 8.5, -34] with width 7 — only ~2 world
  * units in x/z from LIGHTHOUSE_POS ([-13, 1.55, -35]) and at a y that falls
