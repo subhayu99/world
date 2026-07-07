@@ -1,0 +1,40 @@
+{
+  "name": "world",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Hand-drawn 3D portfolio world — standalone deploy at subhayu.in/world",
+  "scripts": {
+    "generate-world": "node scripts/generate-world.js",
+    "predev": "node scripts/generate-world.js",
+    "dev": "vite",
+    "prebuild": "node scripts/generate-world.js",
+    "build": "vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
+    "framer-motion": "^11.13.1",
+    "gsap": "^3.15.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.11",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "happy-dom": "^15.11.7",
+    "js-yaml": "^4.1.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.17",
+    "typescript": "5.6.3",
+    "vite": "^5.4.14",
+    "vitest": "^2.1.9"
+  }
+}

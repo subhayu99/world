@@ -1,0 +1,278 @@
+# World-mode narrative content. Everything here is public-profile material
+# (resume.yaml facts + published awards). Compiled with resume.json into
+# client/public/data/world.json by scripts/generate-world.js.
+
+meta:
+  tagline: "Data & Infrastructure Engineer"
+
+rooms:
+  - id: journey
+    label: "JOURNEY"
+    hint: "Scroll to fly through the journey"
+  - id: warehouse
+    label: "WAREHOUSE"
+    hint: "Click a card to inspect the work"
+  - id: registry
+    label: "REGISTRY"
+    hint: "Pick up a package"
+  - id: contact
+    label: "CONTACT"
+    hint: "Find a way to reach me"
+
+journey:
+  beats:
+    - id: college
+      date: "2018"
+      kind: education
+      title: "B.Tech, Information Technology"
+      body: "Calcutta Institute of Engineering and Management, Kolkata. Graduated 2022 with 8.57/10."
+    - id: community
+      date: "2020"
+      kind: community
+      title: "Community years"
+      body: "Google DSC Lead and CodeChef Chapter Lead — workshops, tech talks, and competitive programming events. Linux Foundation scholarship for LFS201."
+    - id: intern
+      date: "Jan 2022"
+      kind: work
+      title: "First production systems"
+      body: "Software Engineer Intern at FiftyFive Technologies. Geospatial platform for Eningo; Azure DevOps CI/CD for NIBE serving 50,000+ daily users."
+    - id: loopkitchen
+      date: "Sep 2022"
+      kind: work
+      title: "The startup foundation"
+      body: "Built LoopKitchen's core data architecture on GCP — ingestion for millions of delivery orders. The platform raised a $6M seed on top of it."
+    - id: daredevil
+      date: "Mar 2023"
+      kind: award
+      title: "Daredevil Award"
+      body: "FiftyFive Technologies anniversary event."
+    - id: qudiet
+      date: "Mar 2023"
+      kind: publication
+      title: "QuDiet, published"
+      body: "First-author paper on simulating qubit-qudit hybrid quantum systems. IET Quantum Communication."
+      link: "https://doi.org/10.1049/qtc2.12058"
+    - id: performance
+      date: "Jan 2024"
+      kind: work
+      title: "27.5 hours to under 5 seconds"
+      body: "Replaced a 1,900-line financial stored procedure with vectorized DuckDB + Pandas. 80M+ records, 150 clients, 8-decimal accuracy."
+    - id: llmops
+      date: "2024"
+      kind: work
+      title: "LLM infrastructure on H100s"
+      body: "Led a 4-person team fine-tuning Llama and Mistral to >95% accuracy in a production agentic system. The data tooling became DatasetPipeline, open source."
+    - id: enterprise
+      date: "2025"
+      kind: work
+      title: "Enterprise scale"
+      body: "J&J healthcare CDP across APAC, a GDP-compliant cold-chain system that replaced 10-15 ops staff, and the retail platform that unblocked Advent International's due diligence."
+    - id: loop
+      date: "Jan 2026"
+      kind: now
+      title: "Loop AI, Bengaluru"
+      body: "Data engineer on the core platform team — ingestion, observability, and incident response for an enterprise AI platform serving 300+ brands."
+    - id: shipit
+      date: "Jun 2026"
+      kind: award
+      title: "Ship It Award"
+      body: "Loop AI."
+  awards:
+    - id: shipit
+      title: "Ship It Award"
+      issuer: "Loop AI"
+      date: "Jun 2026"
+      caption: "For shipping. Repeatedly."
+    - id: daredevil
+      title: "Daredevil Award"
+      issuer: "FiftyFive Technologies"
+      date: "Mar 2023"
+      caption: "Anniversary event, 2023."
+    - id: lfs
+      title: "Linux Foundation Scholarship"
+      issuer: "The Linux Foundation"
+      date: "2021"
+      caption: "Merit selection, LFS201 System Administration."
+  # Balloon labels for the skills moment on the flight path (short names only)
+  skills:
+    - Python
+    - SQL
+    - BigQuery
+    - dbt
+    - Airflow
+    - Kafka
+    - FastAPI
+    - PostgreSQL
+    - Docker
+    - K8s
+    - Terraform
+    - LangChain
+
+warehouse:
+  exhibits:
+    - id: loop-ai
+      client: "Loop AI"
+      title: "Platform observability & finance ops"
+      metric: "342 GB → 6 GB"
+      body: "Loop Pulse (38 views, 27 API modules) for ingestion monitoring and SLA tracking; TruROI Ops built in 45 days (90 PRs) cutting data lag from 13.7h to near-zero; heaviest BigQuery path cut 57x."
+      tags: ["BigQuery", "dbt", "FastAPI", "React"]
+      date: "2026"
+    - id: sbgc
+      client: "SBGC Group"
+      title: "Multi-region retail data platform"
+      metric: "~10% → <0.22%"
+      body: "Reverse-engineered Shopify revenue logic to unblock Advent International due diligence; root-caused a data explosion and cut volume 99%; delivered an inventory dashboard worth ~$250k."
+      tags: ["Azure", "Databricks", "SAP", "Shopify"]
+      date: "2025"
+    - id: agy
+      client: "AGY Logistics"
+      title: "GDP-compliant cold chain on GCP"
+      metric: "10-15 FTEs automated"
+      body: "Sole architect. Four-layer medallion architecture with a 'Diamond' layer for sub-second alerts; smart time-series merging cut false positives 70%."
+      tags: ["GCP", "BigQuery", "IoT"]
+      date: "2025"
+    - id: jnj
+      client: "Johnson & Johnson"
+      title: "Healthcare CDP for APAC"
+      metric: "12-scenario truth table"
+      body: "Treasure Data pipelines for regulated markets. Consent conflicts resolved by a TDD-validated SQL truth table; a custom Python engine pushed typed data past SFMC's limits."
+      tags: ["Treasure Data", "SQL", "GDPR"]
+      date: "2025"
+    - id: wade
+      client: "Wade Insight"
+      title: "ADF → Microsoft Fabric migration"
+      metric: "-80% manual troubleshooting"
+      body: "Led the enterprise migration, ARM template adaptation, continue-on-failure orchestration, and automated pipeline health checks."
+      tags: ["Azure", "Fabric"]
+      date: "2024"
+    - id: prospexs
+      client: "Prospexs"
+      title: "GenAI outreach platform"
+      metric: "+45% response rate"
+      body: "A 4-entity personalization engine over a 700M+ contact database, generating bilingual context-aware outreach with OpenAI and Perplexity."
+      tags: ["FastAPI", "MongoDB", "OpenAI"]
+      date: "2024"
+    - id: qxlab
+      client: "QxLab"
+      title: "Agentic LLM infrastructure"
+      metric: ">95% accuracy"
+      body: "Fine-tuned Llama/Mistral on H100 clusters for a DAG-based agentic system; terabyte-scale cascading deduplication with MinHash LSH + FAISS."
+      tags: ["H100", "Axolotl", "FAISS"]
+      date: "2024"
+    - id: cv-advisors
+      client: "CV Advisors"
+      title: "Financial procedure rewrite"
+      metric: "27.5h → <5s"
+      body: "1,900 lines of iterative SQL became vectorized DuckDB + Pandas. ~20,000x faster, verified to 8 decimal places against production."
+      tags: ["DuckDB", "Pandas"]
+      date: "2024"
+    - id: slideninja
+      client: "SlideNinja"
+      title: "GenAI presentation platform"
+      metric: "-80% deck time"
+      body: "RAG platform for a McKinsey partner with a self-healing orchestration loop and geometric layout analysis mapping AI content into rigid corporate templates."
+      tags: ["LangChain", "ChromaDB"]
+      date: "2023"
+    - id: loopkitchen
+      client: "LoopKitchen"
+      title: "Food delivery data platform"
+      metric: "$6M seed enabled"
+      body: "Core architecture from scratch: multi-platform ingestion for millions of orders, automated dispute resolution recovering lost revenue, orchestration via GCP Workflows."
+      tags: ["GCP", "BigQuery", "FastAPI"]
+      date: "2022"
+
+registry:
+  headline: "Open source — 56,000+ downloads on PyPI"
+  parcels:
+    - id: datasetpipeline
+      name: "DatasetPipeline"
+      pypiPackage: "datasetpipeline"
+      fallbackDownloads: "11.1k+"
+      body: "Messy datasets → ML-ready formats. SFT, DPO, semantic dedup, quality analysis. Born inside a production LLM team."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/datasetpipeline" }
+        - { label: "GitHub", url: "https://github.com/subhayu99/datasetpipeline" }
+    - id: betterpassphrase
+      name: "BetterPassphrase"
+      pypiPackage: "betterpassphrase"
+      fallbackDownloads: "11.7k+"
+      body: "Grammatically correct passphrases with entropy analysis — memorable and strong."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/BetterPassphrase" }
+        - { label: "GitHub", url: "https://github.com/subhayu99/BetterPassphrase" }
+    - id: smart-commit
+      name: "Smart Commit"
+      pypiPackage: "smart-commit-ai"
+      fallbackDownloads: "7k+"
+      body: "AI commit messages that read your stack, history, and diff. MCP integration included."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/smart-commit-ai" }
+        - { label: "GitHub", url: "https://github.com/subhayu99/smart-commit" }
+    - id: vellaris
+      name: "Vellaris"
+      pypiPackage: "vellaris"
+      fallbackDownloads: "7k+"
+      body: "End-to-end encrypted, self-hosted document sharing. AES-256-GCM, RSA-4096, three clients, one wire protocol."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/vellaris" }
+        - { label: "GitHub", url: "https://github.com/subhayu99/vellaris" }
+    - id: jsondbin
+      name: "jsondbin"
+      pypiPackage: "jsondbin"
+      fallbackDownloads: "7.1k+"
+      body: "A unified Python interface for jsonbin.io — schemas, batch retrieval, graceful errors."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/jsondbin" }
+        - { label: "GitHub", url: "https://github.com/subhayu99/jsondbin" }
+    - id: sqlstream
+      name: "SQLStream"
+      pypiPackage: "sqlstream"
+      fallbackDownloads: "6k+"
+      body: "Zero-setup SQL over CSV, Parquet, Markdown, HTML. Interactive shell included; DuckDB under the hood."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/sqlstream" }
+        - { label: "GitHub", url: "https://subhayu.in/sqlstream" }
+    - id: creatree
+      name: "creatree"
+      pypiPackage: "creatree"
+      fallbackDownloads: "6k+"
+      body: "Directory trees from tree-strings — paste a layout, get a scaffold."
+      links:
+        - { label: "PyPI", url: "https://pypi.org/project/creatree" }
+        - { label: "GitHub", url: "https://github.com/subhayu99/creatree" }
+    - id: portfolio
+      name: "Portfolio Template"
+      body: "This very site, open-sourced. resume.yaml is the single source: one file → PDF + multi-mode portfolio, always in sync."
+      links:
+        - { label: "GitHub", url: "https://github.com/subhayu99/subhayu99.github.io" }
+
+contact:
+  links:
+    - { id: github, label: "GITHUB", url: "https://github.com/subhayu99" }
+    - { id: linkedin, label: "LINKEDIN", url: "https://www.linkedin.com/in/subhayu-kumar-bala" }
+    - { id: email, label: "EMAIL", url: "mailto:balasubhayu99@gmail.com" }
+    - { id: website, label: "RESUME", url: "https://subhayu.in/resume.pdf" }
+  form:
+    endpoint: "" # set to https://api.web3forms.com/submit + accessKey to enable
+    accessKey: ""
+    mailto: "balasubhayu99@gmail.com"
+
+easterEggs:
+  - id: serverRack
+    lines:
+      - "$14,386 in 20 hours. Root-caused, resolved, and now there's a policy."
+  - id: speedometer
+    lines:
+      - "27.5 hours → 4.9 seconds. The needle stays here."
+  - id: quantumCat
+    lines:
+      - "This cat is both asleep and awake until you click."
+      - "QuDiet — qubit-qudit hybrid systems, IET Quantum Communication."
+    link: "https://doi.org/10.1049/qtc2.12058"
+  - id: rubberDuck
+    lines:
+      - "Have you tried explaining it to me?"
+      - "It's not the data. It's never the data. (It's the data.)"
+      - "Did you check the partition filter?"
+      - "SELECT * FROM problems WHERE solved = false;"
+      - "quack."

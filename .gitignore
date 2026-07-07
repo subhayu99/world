@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# generated at build time from world.yaml + public/data/resume.json
+public/data/world.json

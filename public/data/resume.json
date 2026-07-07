@@ -1,0 +1,371 @@
+{
+  "cv": {
+    "name": "Subhayu Kumar Bala",
+    "location": "Bengaluru, India",
+    "email": "balasubhayu99@gmail.com",
+    "phone": "tel:+919382877751",
+    "website": "https://subhayu.in",
+    "resume_url": "https://subhayu.in/resume.pdf",
+    "tagline": "Data & Infrastructure Engineer",
+    "social_networks": [
+      {
+        "network": "LinkedIn",
+        "username": "subhayu-kumar-bala"
+      },
+      {
+        "network": "GitHub",
+        "username": "subhayu99"
+      }
+    ],
+    "sections": {
+      "intro": [
+        "Data and infrastructure engineer with 4 years of experience bridging traditional data engineering with modern AI systems, specializing in Python, SQL, and cloud platforms (AWS/Azure/GCP). Expertise in data architecture, warehousing, data lakes, and governance.",
+        "Proven track record of exceptional performance optimization (reducing a financial procedure <b>from 27.5h to under 5s</b>), building production <b>Agentic LLM systems (>95% accuracy) on H100 clusters</b>, and authoring <b>open-source tools with 62k+ PyPI downloads</b>.",
+        "Delivered measurable business outcomes: data infrastructure enabling a startup's <b>$6M Seed round</b>, unblocking <b>investor audits for Advent International</b>, ensuring enterprise compliance for a Fortune 500 client, and automating workflows to save <b>10-15 FTEs</b>."
+      ],
+      "technologies": [
+        {
+          "label": "Data Engineering",
+          "details": "SQL, BigQuery, ClickHouse, Databricks, MS Fabric, DuckDB, DBT, PySpark, Pandas, Airflow, Kafka, ADF, Delta Lake"
+        },
+        {
+          "label": "AI & LLM Ops",
+          "details": "OpenAI, Gemini, LangChain, RAG, Agentic AI (MCP, A2A), Fine-tuning (SFT/DPO), Vector DBs (Chroma/Qdrant), Neo4j"
+        },
+        {
+          "label": "Backend & Databases",
+          "details": "Python, BASH, Git, FastAPI, Temporal, PostgreSQL, MongoDB, Presto/Trino"
+        },
+        {
+          "label": "Cloud, DevOps & Viz",
+          "details": "AWS, Azure, GCP, Docker, K8s, Terraform, CI/CD, Power BI, Streamlit"
+        }
+      ],
+      "experience": [
+        {
+          "company": "Loop AI",
+          "position": "Data Engineer",
+          "location": "Bengaluru, KA (On-site)",
+          "start_date": "2026-01",
+          "summary": "Data engineer on Loop's core platform team, the enterprise AI platform for restaurant and retail back office serving 300+ brands across thousands of locations ($14M Series A, Feb 2026).",
+          "highlights": [
+            "Built <b>Loop Pulse</b>, a full-stack internal observability platform (38 views, 27 API modules) used daily by 6+ stakeholders for ingestion monitoring, SLA tracking, and incident triage across delivery providers.",
+            "Bootstrapped <b>TruROI Ops</b>, a plan-generation platform for the finance team (90 PRs in 45 days). Replaced a CDC pipeline with direct Postgres reads, cutting data lag from 13.7 hours to near-zero and query costs by 16x.",
+            "Owned <b>16 production incidents</b> with explicit root causes, including a <b>$14k BigQuery cost runaway</b> where I led response and authored the mandatory cross-repo cost-safety policy.",
+            "Optimized the heaviest BigQuery query path from <b>342 GB to under 6 GB</b> via partition pruning and incremental dbt modeling, cutting scan costs by <b>57x</b>."
+          ]
+        },
+        {
+          "company": "FiftyFive Technologies",
+          "position": "Data Engineer",
+          "location": "Gurugram, HR (Remote)",
+          "start_date": "2022-06",
+          "end_date": "2026-01",
+          "summary": "Delivered end-to-end data and AI solutions for 10+ enterprise clients across healthcare, finance, logistics, and tech sectors. Responsibilities extended beyond technical delivery: conducted 100+ technical interviews, led client onboarding and scoping calls, created PoCs/demos, mentored teammates, and drove adoption of emerging technologies (DuckDB, MCP) across the organization.\\ <b>Client Engagements:</b>",
+          "highlights": [
+            "<b>SBGC Group (Retail Data Platform)</b>: Took ownership of a multi-region Azure/Databricks platform integrating SAP/Shopify/Klaviyo/GA4. <b>Unblocked Advent International due diligence</b> by reverse-engineering Shopify's logic to <b>cut revenue variance from ~10% to \\<0.22%</b>. Root-caused a critical legacy data explosion (<b>slashing volume by 99%</b>) and delivered an <b>inventory dashboard worth ~$250k</b>.",
+            "<b>AGY Logistics (IoT & Automation)</b>: Sole architect of a GDP-compliant cold chain system on GCP (BigQuery, Cloud Run). Automated complex manual workflows previously requiring <b>10-15 US-based operations staff</b>, resulting in massive OpEx savings. Engineered smart time-series merging and statistical analysis on a 4-layer medallion architecture (including a 'Diamond Layer' for sub-second alerts) to <b>reduce false positives by 70%</b>.",
+            "<b>Johnson & Johnson (Healthcare CDP)</b>: Architected scalable Treasure Data pipelines for regulated healthcare markets (JP/ANZ). Engineered complex transformation logic, including a 12-scenario SQL truth table (validated via TDD) to resolve hierarchical consent conflicts and a custom Python engine to overcome SFMC platform limitations, ensuring strict <b>GDPR/PII compliance</b>.",
+            "<b>Wade Insight (Cloud Migration)</b>: Led enterprise migration from Azure Data Factory to <b>Microsoft Fabric Data Factory</b>, managing ARM template adaptation. Enhanced the SaaS platform with advanced continue-on-failure orchestration and automated health-check processes, reducing manual troubleshooting by 80%.",
+            "<b>Prospexs (GenAI Product Engineering)</b>: Built an AI outreach platform (Python/FastAPI/MongoDB) backed by a <b>700M+ contact database</b>. Engineered a complex 4-entity personalization engine (Sender/Receiver × Human/Company) using OpenAI/Perplexity to generate bilingual, context-aware communications, <b>improving response rates by 45%</b>.",
+            "<b>QxLab (LLM Infrastructure)</b>: Led a 4-person team fine-tuning Llama/Mistral models using Axolotl on <b>H100 clusters</b> to achieve <b>\\>95% accuracy</b> in a production DAG-based agentic system. Separately, architected a Terabyte-scale cascading deduplication pipeline (MinHash LSH + FAISS) to standardize datasets (SFT/DPO/RLHF). Later open-sourced as <b>DatasetPipeline (13k+ downloads)</b>.",
+            "<b>CV Advisors (Performance Engineering)</b>: Replaced a 1900-line MSSQL procedure (iterative cursors) into vectorized logic (<b>DuckDB</b>/Pandas), processing 80M+ records across 150 clients. <b>Reduced runtime from 27.5h to \\<5s (\\>99.9% gain)</b>. Engineered a future-proof architecture capable of scaling beyond RAM limits via memory-optimized categorical typing and DuckDB’s out-of-core processing.",
+            "<b>SlideNinja (GenAI RAG Architecture)</b>: Developed a GenAI RAG platform (LangChain/ChromaDB) for a <b>McKinsey partner</b> during the early GenAI boom, featuring a 'Self-Healing' AI orchestration layer and proprietary 'Geometric Layout Analysis' to map unstructured content into rigid corporate PowerPoint templates.",
+            "<b>LoopKitchen (Real-time Data Ingestion)</b>: Built core data architecture (GCP/BigQuery/FastAPI/GCP Workflows) enabling a <b>$6M Seed round</b>. Migrated fragile legacy scrapers to robust official API integrations (UberEats/DoorDash/Grubhub) for millions of orders and engineered an automated dispute resolution system to directly recover lost revenue."
+          ]
+        },
+        {
+          "company": "FiftyFive Technologies",
+          "position": "Software Engineer Intern",
+          "location": "Gurugram, HR (Remote)",
+          "start_date": "2022-01",
+          "end_date": "2022-05",
+          "summary": "Gained experience with production infrastructure (Docker, Terraform, K8s, CI/CD), backend best practices, and client-facing delivery.\\ <b>Client Engagements:</b>",
+          "highlights": [
+            "<b>Eningo</b>: Developed a cloud-based geospatial platform; migrated legacy data from Postgres to MongoDB for enhanced scalability.",
+            "<b>NIBE</b>: Managed and established Azure DevOps CI/CD pipelines for critical services supporting 50,000+ daily users."
+          ]
+        }
+      ],
+      "education": [
+        {
+          "institution": "Calcutta Institute of Engineering and Management (MAKAUT)",
+          "location": "Kolkata, WB",
+          "area": "Information Technology",
+          "degree": "B.Tech",
+          "start_date": "2018-07",
+          "end_date": "2022-06",
+          "highlights": [
+            "<b>CGPA:</b> 8.57/10 ([B.Tech Certificate](https://drive.google.com/file/d/1xX8XtAlEEnXSgkcJ3jYmYSJOQWRylA6S/view))",
+            "<b>Google DSC Lead (2020-2021):</b> Led developer community, organized workshops and tech talks. [Google Dev Profile](https://g.dev/subhayu99)",
+            "<b>CodeChef Chapter Lead (2020-2021):</b> Hosted 4 competitive programming events (4 to 21 students). [CodeChef Certificate](https://drive.google.com/file/d/1NYokFweEGTAfgL3sZO6qeEiyC6HD9pQ7/view)",
+            "<b>Linux Foundation Scholarship Recipient:</b> Merit selection for LFS201 Linux System Administration. [Credly Profile](https://www.credly.com/users/subhayu99/badges)"
+          ]
+        }
+      ],
+      "professional_projects": [
+        {
+          "name": "Loop AI - Enterprise Delivery Intelligence Platform",
+          "date": "Jan 2026 – Present",
+          "highlights": [
+            "Owned end-to-end ingestion and onboarding across major delivery providers (UberEats, DoorDash, Grubhub), ensuring data freshness SLAs for restaurant chains on the platform.",
+            "Built a self-service Ingestion Ops platform from scratch with BigQuery-backed audit logging, automated pre-checks, and trigger history—eliminating engineer dependency for re-ingestion workflows and significantly reducing ops toil.",
+            "Designed ingestion observability with Grafana scorecards for module/source-level freshness, dbt snapshots for SLA aggregates, and automated alerting that enabled proactive RCA for data quality drops across providers.",
+            "Owned on-call for ingestion and onboarding incidents (PagerDuty), coordinating large-scale recovery campaigns (~28k slugs across modules) and resolving proxy, authentication, and credential issues.",
+            "Contributed to platform infrastructure initiatives including ingestion proxy design, staging environment setup (Terraform, Cloud Run, Cloud SQL), and local development tooling.",
+            "Bootstrapped <b>TruROI Ops</b> (90 PRs, 218 commits in 45 days), a mobile-first PWA for plan generation readiness, email tracking with SendGrid batch-aware status aggregation, and finance team workflows. Cut over from Datastream CDC to direct PostgreSQL read-replica, eliminating 13.7-hour replication lag.",
+            "Built <b>Loop Duty</b>, an on-call PWA with Slack-driven priority routing, FCM web push notifications, per-thread message deduplication, and slack:// deep-links across 4 responsive viewports.",
+            "Scaffolded the <b>Loop Ops Platform</b> monorepo: 8-schema PostgreSQL design, FastAPI backend with Firebase Auth + RBAC middleware, Cloud Run + Vercel CI/CD, and a React/TypeScript/MUI frontend with role-filtered module navigation.",
+            "Led engineering response to a <b>$14,386 BigQuery cost incident</b> (polling tab running 20h, 34,887 jobs). Root-caused, resolved, and authored the cross-repo cost-safety policy (mandatory dry-run, bytes-billed caps, polling-loop bans).",
+            "Ported the <b>Drift Monitor</b> from Python CLI to a full React dashboard, and drove the <b>Synapse Dashboard v3</b> initiative consolidating ingestion status across 3 repos into a unified view.",
+            "Resolved silent data-integrity bugs across delivery platforms: DoorDash storeId type mismatch (int-vs-string affecting 140+ slugs every sync), OLO freshness drag (98% to 50%), and case-sensitive JOIN silently dropping an entire chain."
+          ]
+        },
+        {
+          "name": "SBGC Group - Multi-Region Retail Data Platform",
+          "date": "Jul 2025 – Jan 2026",
+          "highlights": [
+            "Took ownership of a multi-region Azure/Databricks Medallion architecture integrating SAP, Shopify, Klaviyo, and GA4. Unblocked Advent International due diligence by reverse-engineering Shopify's 'Net Sales' logic to exclude specific shipping refunds, reducing US revenue variance from ~10% to \\<0.22%.",
+            "Resolved a critical 7-day infrastructure crisis where Azure VM capacity constraints halted production. Diagnosed cluster provisioning failures via logs and reconfigured Databricks node types (Standard_D4ads_v5) to restore all pipelines.",
+            "Root-caused a critical data explosion bug (Cartesian join) that ballooned dataset size to 94M rows. Optimized the pipeline logic to slash volume by 99% (to 839k rows), significantly reducing compute costs.",
+            "Executed a comprehensive Data Privacy compliance project (GDPR), implementing consent tracking across Shopify/SAP/Klaviyo and building PII-hashing strategies for investor data extracts.",
+            "Built a cross-system 'Order Fulfillment Dashboard' integrating data from Shopify (Sales), SAP (ERP), and PDR (Logistics) to replace manual Excel reporting and track order SLAs in real-time."
+          ]
+        },
+        {
+          "name": "AGY Logistics - Reefer Temperature Monitoring System",
+          "date": "Jun 2025 – Sep 2025",
+          "highlights": [
+            "Architected a GDP-compliant cold chain monitoring system on GCP using a Medallion Architecture (Bronze/Silver/Gold/Diamond). The 'Diamond Layer' pre-aggregated alert candidates, enabling the Alerting Engine to dispatch notifications with sub-second latency.",
+            "Engineered 'Smart Merge' logic using SQL window functions (`LAST_VALUE`) to unify asynchronous data streams (sporadic TMS updates vs. high-frequency IoT telemetry) into a continuous, context-aware timeline.",
+            "Designed an internal 'Phone Book' architecture to decouple sensor mapping from external TMS errors, ensuring data integrity even when manual entry errors occurred in the source system.",
+            "Automated complex manual workflows previously requiring 10-15 US-based operations staff, resulting in massive OpEx savings.",
+            "Slashed cloud compute costs by deprecating expensive BQML (Machine Learning) models in favor of optimized SQL-based statistical analysis (rolling windows/standard deviations), reducing false positive alerts by 70%."
+          ]
+        },
+        {
+          "name": "Johnson & Johnson - Healthcare Data Platform (CDP)",
+          "date": "Feb 2025 – Jun 2025",
+          "highlights": [
+            "Architected a region-wide Customer Data Platform (CDP) for APAC (ANZ/JP) on Treasure Data, using a Medallion Architecture (Bronze/Silver/Gold) to unify Veeva CRM, SFMC, and GA4 data.",
+            "Built a custom Python <b>SFMC Activation Engine</b> to overcome platform limitations (standard connectors cast all types to Text). Implemented smart schema inference and parallel processing (`ThreadPoolExecutor`) to push typed data (Booleans/Dates) to Salesforce Marketing Cloud via SOAP/REST APIs.",
+            "Engineered the 'Golden Record' consent logic using a deterministic <b>12-scenario SQL Truth Table</b> to resolve conflicts between Global vs. Channel-specific opt-ins. Implemented <b>Test-Driven Development (TDD) in SQL</b> by creating a mock-data test suite to mathematically prove logic correctness for legal compliance.",
+            "Solved a Big Data transformation challenge by writing complex SQL (`UNNEST`/`CROSS JOIN`) to flatten deeply nested, semi-structured <b>Google Analytics 4 (GA4)</b> JSON event logs into relational behavioral metrics for segmentation.",
+            "Developed a <b>'Segmentation-as-Code'</b> CLI tool using Python/Typer. This allowed the team to manage complex Audience Studio configurations via version-controlled YAML templates, replacing error-prone GUI manual work.",
+            "Implemented an <b>Automated Data Integrity Framework</b> that runs pre-ETL validation checks against defined schema contracts and business rules (e.g., 'Null % thresholds'), preventing silent data failures."
+          ]
+        },
+        {
+          "name": "Wade Insight - Cloud-Native Data Orchestration Platform",
+          "date": "Nov 2024 – Feb 2025",
+          "highlights": [
+            "Enhanced core pipeline orchestration features for WADE's Azure SaaS platform, implementing comprehensive continue_on_failure mechanisms with SQL dependency handling and advanced job execution tracking.",
+            "Led migration of enterprise data pipelines from Azure Data Factory to Microsoft Fabric Data Factory, managing ARM template adaptation and deployment for clients processing millions of records.",
+            "Developed automated healthcheck processes leveraging Azure APIs to monitor running pipelines, reducing manual troubleshooting overhead by 80% and enabling faster insight delivery."
+          ]
+        },
+        {
+          "name": "Prospexs - GenAI Outreach Platform",
+          "date": "Jul 2024 – Oct 2024",
+          "highlights": [
+            "Built the backend for an AI-powered outreach platform using Python/FastAPI and MongoDB, reducing manual prospecting efforts by 60% through intelligent automation.",
+            "Developed a 'Website Analysis' module using scraping and prompt engineering to extract USPs and generate detailed business profiles automatically from raw company URLs.",
+            "Engineered a complex 4-entity personalization engine that cross-analyzes distinct profiles (Sender Human/Company vs. Receiver Human/Company) to generate hyper-personalized, context-aware emails.",
+            "Implemented bilingual generation capabilities (English/Swedish) with dynamic tone adjustment, integrating OpenAI/Perplexity/LinkedIn APIs to validate profiles and improve client response rates by 45%.",
+            "Designed a fully automated pipeline using Cloud Scheduler for real-time data processing and model orchestration."
+          ]
+        },
+        {
+          "name": "QxLab - Agentic AI Infrastructure & LLMOps",
+          "date": "Jan 2024 – Jun 2024",
+          "highlights": [
+            "Led a 4-person team fine-tuning Llama/Mistral models on H100 clusters to achieve <b>\\>95% accuracy</b> in a production-ready 'Mixture of Experts' agentic framework (Router/Planner/Extractor).",
+            "Architected the system's <b>DAG-based execution engine</b> (`StepRunner`) with dynamic state injection (Regex-based variable substitution) to handle complex, multi-step reasoning tasks.",
+            "Solved a critical data engineering bottleneck where disparate, ad-hoc scripts failed to scale for Terabyte-sized datasets. Consolidated the entire data lifecycle into a <b>unified, configuration-driven (YAML) pipeline engine</b> that enforced reproducibility across the team.",
+            "Engineered advanced data processors within this engine for <b>semantic deduplication</b> (using embeddings), <b>automated quality analysis</b>, and seamless format conversions (Text/SFT/DPO/RLHF and more). This internal infrastructure was later modularized and open-sourced as <b>DatasetPipeline</b>.",
+            "Solved the 'Context Window Limit' for tool usage by implementing a <b>'RAG for Tools'</b> system, using vector search to dynamically retrieve and inject relevant Python function definitions at runtime.",
+            "Built a 'Probabilistic-to-Deterministic' bridge using <b>Pydantic V2</b> to enforce strict schema validation on LLM outputs, acting as a firewall against hallucinations."
+          ]
+        },
+        {
+          "name": "CV Advisors - High-Performance Financial Data Processing",
+          "date": "Jan 2024 – Jan 2024",
+          "highlights": [
+            "Executed a high-stakes performance engineering PoC to replace a legacy 1900+ line SQL stored procedure that suffered from 'Row-By-Agonizing-Row' (RBAR) processing.",
+            "Identified the critical bottleneck: nested `WHILE` loops and a scalar UDF (`dbo.ufn_CalcPnL`) that prevented SQL parallelism. Re-architected the solution to eliminate these blocking factors entirely.",
+            "Designed a hybrid compute engine using <b>DuckDB for high-speed set aggregations</b> and <b>Pandas for vectorized window operations</b> (Cumulative Sums/Shifts), utilizing the best tool for each mathematical operation.",
+            "Reduced runtime from 27.5 hours to under 5 seconds (~20,000x faster) for 80M+ records across 150 clients, shattering the client's 5-minute target via pure in-memory computation.",
+            "Engineered a <b>future-proof architecture</b> capable of scaling beyond RAM limits via memory-optimized categorical typing (reducing footprint by ~4.5x) and DuckDB’s out-of-core processing capabilities.",
+            "Ensured <b>100% numerical accuracy to 8 decimal places</b> against the legacy production system, validating the financial integrity of the new pipeline before delivery.",
+            "Implemented complex business logic for 'Phantom Accounts' (aggregating child entities) and 'Subtype History', transforming a monolithic SQL script into modular, testable Object-Oriented Python.",
+            "Built a smart local Parquet caching layer to eliminate network I/O latency during development and re-runs, significantly accelerating the debugging cycle."
+          ]
+        },
+        {
+          "name": "LoopKitchen (now Loop) - Food Delivery Intelligence Platform",
+          "date": "Sep 2022 – Jun 2023",
+          "highlights": [
+            "Built core data architecture from scratch for a food delivery analytics startup using a comprehensive GCP stack: FastAPI/SQLModel on Cloud Run, BigQuery for warehousing, Firestore for metadata tracking and orchestrated via GCP Workflows.",
+            "Developed multi-platform data ingestion pipelines scraping and processing millions of orders from UberEats, DoorDash, and Grubhub APIs, enabling real-time performance analytics for restaurant brands and franchises.",
+            "Engineered an automated dispute resolution system that allowed restaurants to automatically submit claims for bad orders, directly recovering lost revenue.",
+            "Created a custom Streamlit monitoring dashboard providing real-time visibility into orchestration workflows with granular tracking (Brand→Region→Chain→Store→Order), essential for debugging distributed systems.",
+            "Implemented sophisticated orchestration via GCP Workflows and established CI/CD for BigQuery routines, ensuring version-controlled and reproducible data infrastructure.",
+            "Contributed as core team member (10-person startup) working directly with technical leadership, helping build the foundation for a platform that secured $6M in Seed funding and now serves major restaurant chains like Dave's Hot Chicken and Freddy's."
+          ]
+        },
+        {
+          "name": "Logical Contract - AI-Powered Contract Generator",
+          "date": "Oct 2023 — Dec 2023",
+          "highlights": [
+            "Implemented an AI-powered system to generate tailored employment agreements for startups based on dynamic user inputs.",
+            "Developed a RAG-based legal chatbot that catered to legal inquiries, offering tailored responses based on verified legal context."
+          ]
+        },
+        {
+          "name": "SlideNinja - Enterprise AI Presentation Platform",
+          "date": "Jul 2023 — Oct 2023",
+          "highlights": [
+            "Architected an enterprise-grade GenAI platform using a microservices-ready architecture, containerized via Docker and deployed on Google Cloud Run for serverless auto-scaling.",
+            "Engineered a proprietary 'Geometric Layout Analysis' engine that calculates bounding boxes and shape overlaps to intelligently map AI-generated content into rigid corporate templates, overcoming the limitations of standard placeholder logic.",
+            "Implemented a 'Smart Template' parser that reads configuration data directly from a hidden slide within the PPTX file, allowing dynamic template updates without code changes.",
+            "Built a 'Self-Healing' AI orchestration layer with a recursive rectification loop: if the LLM generates malformed JSON, the system automatically feeds the error trace back to the model for correction, ensuring robust production reliability.",
+            "Designed a high-concurrency backend using FastAPI (AsyncIO) and ThreadPoolExecutor to 'fan-out' slide generation requests, reducing deck creation time by ~80% via Map-Reduce parallelism.",
+            "Solved serverless state issues by building a stateless template synchronization engine that uses MD5 hashing to sync local ephemeral storage with Google Cloud Storage on startup.",
+            "Developed low-level XML manipulation routines to handle complex typography features (dynamic text fitting, custom bullet styling, contrast-aware font coloring) not supported by standard libraries.",
+            "Integrated a secure RBAC system with MongoDB Atlas for user state and request logging, implementing a custom `@cache_it` decorator to minimize API costs through intelligent prompt caching."
+          ]
+        },
+        {
+          "name": "Eningo - Automated Cable & Utility Mapping Platform",
+          "date": "Apr 2022 — Aug 2022",
+          "highlights": [
+            "Developed a cloud-based platform for automating cable network issue requests and processing geospatial data.",
+            "Migrated legacy data from Postgres to MongoDB, enhancing scalability and efficiency."
+          ]
+        },
+        {
+          "name": "NIBE - DevOps Automation for Sustainable Energy Tech",
+          "date": "Feb 2022 — Mar 2022",
+          "highlights": [
+            "Created and managed CI/CD pipelines on Azure DevOps, impacting over 50k daily users."
+          ]
+        }
+      ],
+      "personal_projects": [
+        {
+          "name": "Portfolio Template",
+          "date": "Apr 2026",
+          "highlights": [
+            "Open-sourced <b>this very portfolio</b> to fix resume↔website drift — `resume.yaml` is the single source: one file → PDF resume + multi-mode portfolio site (splash · terminal · GUI), always in sync.",
+            "Zero-code: fork, drop in YAML, deploy to GitHub Pages in \\<10 min — themes, AI converter, hidden games, scroll animations, sparklines, PWA install all included.",
+            "Click the title for live adoption stats; full source on [GitHub](https://github.com/subhayu99/subhayu99.github.io)."
+          ],
+          "github_repo": "https://github.com/subhayu99/subhayu99.github.io",
+          "live_url": "#fork",
+          "showcase_command": "showcase"
+        },
+        {
+          "name": "SQLStream",
+          "date": "Nov 2025",
+          "pypi_package": "sqlstream",
+          "highlights": [
+            "Created a <b>zero-setup SQL tool</b> to quickly analyze data files (CSV, Parquet, Markdown, HTML) via CLI or Python, streamlining repetitive data quality checks without DB overhead.",
+            "Built a powerful interactive shell with syntax highlighting and history for data exploration, alongside a standard query mode for piping results into other terminal tools.",
+            "Engineered a flexible engine that auto-switches between <b>DuckDB</b>, Pandas, or native Python to execute queries; published on [PyPI](https://pypi.org/project/sqlstream) (<b>6.6k+ downloads</b>) with full [documentation](https://subhayu.in/sqlstream)."
+          ]
+        },
+        {
+          "name": "Smart Commit",
+          "date": "May 2025",
+          "pypi_package": "smart-commit-ai",
+          "highlights": [
+            "Built an AI-powered CLI tool using Python/Typer that generates context-aware git commits via OpenAI or Anthropic models, enhancing developer productivity.",
+            "Intelligently adapts to different projects by analyzing the existing tech stack, commit history, and file changes, ensuring contextually relevant messages.",
+            "Published on [PyPI](https://pypi.org/project/smart-commit-ai) (<b>7.6k+ downloads</b>) and [GitHub](https://github.com/subhayu99/smart-commit) with <b>Model Context Protocol (MCP)</b> integration."
+          ]
+        },
+        {
+          "name": "Vellaris",
+          "date": "Apr 2025",
+          "pypi_package": "vellaris",
+          "highlights": [
+            "Built an end-to-end encrypted, self-hosted document sharing platform with AES-256-GCM file encryption, RSA-4096 key exchange, and Argon2id passphrase KDF. Evolved from an earlier [proof-of-concept](https://subhayu.in/DocumentAccessPOC/).",
+            "Ships three clients (CLI, Python SDK, Web SPA) sharing one on-wire protocol, with Web Worker crypto so keygen and encryption never block the UI thread.",
+            "Published on [PyPI](https://pypi.org/project/vellaris) (<b>7k+ downloads</b>) and [GitHub](https://github.com/subhayu99/vellaris) under Apache 2.0; Docker images on GHCR (<b>479 pulls</b>) with slim and full variants for self-hosting."
+          ]
+        },
+        {
+          "name": "DocumentAccessPOC",
+          "date": "Jan 2025",
+          "highlights": [
+            "Designed and <b>built a zero-trust secure document system</b> to solve granular access control challenges where traditional RBAC/ACLs fail.",
+            "Implemented a robust cryptographic model featuring <b>end-to-end encryption (AES-GCM)</b> and secure key exchange (RSA) to enforce permissions at a data level.",
+            "Built a FastAPI interface for secure document sharing and revocation; project is on [GitHub](https://github.com/subhayu99/DocumentAccessPOC) with detailed [documentation](https://subhayu.in/DocumentAccessPOC/). Later evolved into [Vellaris](https://github.com/subhayu99/vellaris)."
+          ]
+        },
+        {
+          "name": "DatasetPipeline",
+          "date": "May 2025",
+          "pypi_package": "datasetpipeline",
+          "highlights": [
+            "Developed a <b>production-ready CLI tool</b> for transforming messy datasets into ML-ready formats; supports <b>SFT, DPO, semantic deduplication</b>, and quality analysis.",
+            "Features smart role mapping, auto-formatting for OpenAI-style training, and reproducible workflows via YAML/JSON configuration for enterprise ML pipelines.",
+            "Published on [PyPI](https://pypi.org/project/datasetpipeline) (<b>13k+ downloads</b>) and open-sourced on [GitHub](https://github.com/subhayu99/datasetpipeline) with extensible architecture for custom loaders, formatters, and analyzers."
+          ]
+        },
+        {
+          "name": "creatree",
+          "date": "Feb 2025",
+          "pypi_package": "creatree",
+          "highlights": [
+            "Developed a Python CLI tool and library for automating directory structure creation from tree-like strings, solving repetitive project scaffolding.",
+            "Designed for maximum flexibility with both a Python library for programmatic integration and a CLI supporting stdin/pipes.",
+            "Published on [PyPI](https://pypi.org/project/creatree) (<b>6.4k+ downloads</b>) and open-sourced on [GitHub](https://github.com/subhayu99/creatree)."
+          ]
+        },
+        {
+          "name": "BetterPassphrase",
+          "date": "Jan 2024",
+          "pypi_package": "betterpassphrase",
+          "highlights": [
+            "Built a Python CLI tool/library for generating secure, memorable passphrases using grammatically correct phrases with customizable word counts.",
+            "Implemented probabilistic security analysis with entropy calculations and parts-of-speech parsing to balance memorability with cryptographic strength.",
+            "Published on [PyPI](https://pypi.org/project/BetterPassphrase) (<b>13k+ downloads</b>) and open-sourced on [GitHub](https://github.com/subhayu99/BetterPassphrase) supporting batch generation."
+          ]
+        },
+        {
+          "name": "jsondbin",
+          "date": "Mar 2024",
+          "pypi_package": "jsondbin",
+          "highlights": [
+            "Built a Python package providing a unified interface for managing JSON data through jsonbin.io, simplifying CRUD operations on collections and documents.",
+            "Supports schema attachment, batch document retrieval, and graceful error handling for seamless integration into data workflows.",
+            "Published on [PyPI](https://pypi.org/project/jsondbin) (<b>7.4k+ downloads</b>) and open-sourced on [GitHub](https://github.com/subhayu99/jsondbin)."
+          ]
+        },
+        {
+          "name": "FINADICT - Financial Prediction App",
+          "date": "Sep 2021",
+          "highlights": [
+            "Built an interactive financial forecasting tool with Streamlit, enabling users to analyze and predict market data for stocks, forex, and cryptocurrencies.",
+            "Implemented a suite of analytical features, including price forecasting via FB Prophet, interactive Plotly visualizations, and downloadable data reports.",
+            "Managed the project's full lifecycle from development to deployment, containerizing the app with Docker and maintaining it as a live, public-facing service. Now open-sourced on [GitHub](https://github.com/subhayu99/finadict)."
+          ]
+        }
+      ],
+      "publication": [
+        {
+          "title": "QuDiet: A Classical Simulation Platform for Qubit-Qudit Hybrid Quantum Systems",
+          "authors": [
+            "Subhayu Kumar Bala",
+            "Turbasu Chatterjee",
+            "Arnav Das"
+          ],
+          "date": "2023-03-28",
+          "journal": "IET Quantum Communication",
+          "doi": "10.1049/qtc2.12058"
+        }
+      ]
+    }
+  }
+}
